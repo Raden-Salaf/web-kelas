@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Album Futsal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      .album-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 30px;
+      }
+
+      .media-item {
+        background-color: white;
+        padding: 0;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        aspect-ratio: 16 / 9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .media-item img,
+      .media-item video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Ini yang bikin landscape */
+        border-radius: 0;
+      }
+
+      /* Lightbox */
+      .lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        overflow-y: auto; /* ✅ ini penting buat scroll */
+        padding: 40px 20px; /* supaya ada jarak */
+        box-sizing: border-box;
+      }
+
+      .lightbox-content {
+        max-width: 90%;
+        max-height: none; /* biar ngikutin isi */
+      }
+
+      .lightbox-content img,
+      .lightbox-content video {
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        height: auto; /* ✅ biar proporsional */
+        object-fit: contain; /* ✅ tampil utuh, tidak crop */
+        border-radius: 10px;
+      }
+
+      .lightbox:target {
+        display: flex;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 30px;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        z-index: 1000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Album Futsal</h1>
+
+    <div class="album-grid">
+      <!-- Foto -->
+      <div
+        class="media-item"
+        onclick="openLightbox('assets/images/futsal1.jpeg', 'image')"
+      >
+        <img src="assets/images/futsal1.jpeg" alt="Foto 1" />
+      </div>
+
+      <!-- Video -->
+      <div
+        class="media-item"
+        onclick="openLightbox('assets/images/video_futsal1.mp4', 'video')"
+      >
+        <video src="assets/images/video_futsal1.mp4" muted></video>
+      </div>
+
+      <div
+        class="media-item"
+        onclick="openLightbox('assets/images/futsal2.jpeg', 'image')"
+      >
+        <img src="assets/images/futsal2.jpeg" alt="Foto 2" />
+      </div>
+
+      <div
+        class="media-item"
+        onclick="openLightbox('assets/images/video_futsal2.mp4', 'video')"
+      >
+        <video src="assets/images/video_futsal2.mp4" muted></video>
+      </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+      <a href="#" class="close-btn" onclick="closeLightbox(event)">×</a>
+      <div class="lightbox-content" id="lightbox-content">
+        <!-- Akan diisi dinamis -->
+      </div>
+    </div>
+
+    <script>
+      function openLightbox(src, type) {
+        const container = document.getElementById("lightbox-content");
+        container.innerHTML = ""; // kosongkan dulu
+        if (type === "image") {
+          const img = document.createElement("img");
+          img.src = src;
+          container.appendChild(img);
+        } else if (type === "video") {
+          const video = document.createElement("video");
+          video.src = src;
+          video.controls = true;
+          video.autoplay = true;
+          video.muted = false;
+          video.className = "lightbox-video"; // ✅ kelas khusus video
+          container.appendChild(video);
+        }
+
+        document.getElementById("lightbox").style.display = "flex";
+      }
+
+      function closeLightbox(event) {
+        if (event) event.preventDefault();
+        const lightbox = document.getElementById("lightbox");
+        lightbox.style.display = "none";
+        document.getElementById("lightbox-content").innerHTML = ""; // stop video juga
+      }
+    </script>
+  </body>
+</html>
