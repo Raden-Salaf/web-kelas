@@ -11,6 +11,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 p {
 	margin-bottom: 0px;
@@ -90,6 +91,7 @@ a.filled-button:hover {
 
 .products-heading {
 	background-image: url(../images/bgproduct.jpeg);
+	
 }
 
 .about-heading {
@@ -106,6 +108,8 @@ a.filled-button:hover {
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-size: cover;
+	
+	
 }
 
 .page-heading .text-content h4 {
@@ -114,6 +118,8 @@ a.filled-button:hover {
 	text-transform: uppercase;
 	font-weight: 700;
 	margin-bottom: 15px;
+	
+	
 }
 
 .page-heading .text-content h2 {
@@ -226,6 +232,7 @@ header .navbar {
 	position: fixed;
 	background-color: #fff!important;
 	box-shadow: 0px 1px 10px rgba(0,0,0,0.1);
+	
 }
 .background-header .navbar-brand h2 {
 	color: #121212!important;
