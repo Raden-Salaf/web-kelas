@@ -329,7 +329,7 @@ header .navbar {
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center center;
-	background-color: rgba(0, 0, 0, 0.4); /* overlay hitam transparan */
+	background-color: rgba(0, 0, 0, 0.1); /* overlay hitam transparan */
   	z-index: 1;
 }
 
@@ -481,6 +481,10 @@ header .navbar {
 
 /* Best Features */
 
+#container-item{
+	display: flex;
+	flex-wrap: wrap;
+}
 .about-features {
 	margin-top: 100px!important;
 }
@@ -493,6 +497,7 @@ header .navbar {
 .about-features .container .row {
 	padding-bottom: 0px!important;
 	border-bottom: none!important;
+	width: 100%;
 }
 
 .best-features {
