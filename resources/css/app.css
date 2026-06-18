@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@plugin "@tailwindcss/forms";
+
+@theme {
+    --font-family-sans: 'Inter', sans-serif;
+
+    --color-primary-50:  #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
+
+    --animate-float:       float 6s ease-in-out infinite;
+    --animate-float-slow:  float 9s ease-in-out infinite;
+    --animate-pulse-slow:  pulse 4s cubic-bezier(0.4,0,0.6,1) infinite;
+    --animate-slide-up:    slideUp 0.6s ease-out;
+    --animate-fade-in:     fadeIn 0.8s ease-out;
+    --animate-bounce-slow: bounce 3s infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-20px); }
+}
+
+@keyframes slideUp {
+    0%   { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes fadeIn {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #1e3a8a; }
+::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+
+/* Glassmorphism */
+.glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.glass-dark {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Gradient text */
+.gradient-text {
+    background: linear-gradient(135deg, #60a5fa, #a78bfa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Glow */
+.glow    { box-shadow: 0 0 30px rgba(59, 130, 246, 0.4); }
+.glow-sm { box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+
+/* Card hover */
+.card-hover { transition: all 0.3s ease; }
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+}
+
+/* Dot background */
+.bg-dots {
+    background-image: radial-gradient(rgba(59,130,246,0.15) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
