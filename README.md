@@ -251,3 +251,5 @@ Project ini dibuat untuk keperluan internal kelas dan pembelajaran. Bebas dimodi
 ## 🙌 Kontributor
 
 Dikembangkan oleh mahasiswa Teknik Informatika sebagai sarana belajar pengembangan web full-stack menggunakan Laravel.
+instagram : den_salafy
+
