@@ -120,4 +120,123 @@ class AdminController extends Controller
 
         return back()->with('success', 'Pengaturan berhasil disimpan!');
     }
+
+    public function generateWAMessage()
+    {
+        $hariIni = $this->getHariIndonesia();
+        $tanggal = now()->isoFormat('dddd, D MMMM Y');
+
+        // Ambil jadwal hari ini
+        $schedules = \App\Models\Schedule::where('day', $hariIni)
+            ->orderBy('start_time')
+            ->get();
+
+        // Ambil PR deadline hari ini
+        $homeworksToday = \App\Models\Homework::where('is_done', false)
+            ->whereDate('due_date', today())
+            ->orderBy('due_time')
+            ->get();
+
+        // Ambil PR deadline besok
+        $homeworksTomorrow = \App\Models\Homework::where('is_done', false)
+            ->whereDate('due_date', today()->addDay())
+            ->orderBy('due_time')
+            ->get();
+
+        // Ambil PR deadline 3 hari ke depan (upcoming)
+        $homeworksUpcoming = \App\Models\Homework::where('is_done', false)
+            ->whereDate('due_date', '>', today()->addDay())
+            ->whereDate('due_date', '<=', today()->addDays(3))
+            ->orderBy('due_date')
+            ->get();
+
+        $className = \App\Models\SiteSetting::getValue('class_name', 'Kelas TIF');
+
+        // Build pesan
+        $pesan = "📢 *PENGINGAT HARIAN - {$className}*\n";
+        $pesan .= "📅 {$tanggal}\n";
+        $pesan .= str_repeat("─", 30) . "\n\n";
+
+        // Jadwal hari ini
+        if ($schedules->isEmpty()) {
+            $pesan .= "📚 *JADWAL KULIAH HARI INI*\n";
+            $pesan .= "Tidak ada kuliah hari ini 🎉\n\n";
+        } else {
+            $pesan .= "📚 *JADWAL KULIAH HARI INI ({$hariIni})*\n";
+            foreach ($schedules as $s) {
+                $mulai = \Carbon\Carbon::parse($s->start_time)->format('H:i');
+                $selesai = \Carbon\Carbon::parse($s->end_time)->format('H:i');
+                $pesan .= "• {$s->subject}\n";
+                $pesan .= "  ⏰ {$mulai} - {$selesai}";
+                if ($s->room) $pesan .= " | 📍 {$s->room}";
+                if ($s->lecturer) $pesan .= "\n  👨‍🏫 {$s->lecturer}";
+                $pesan .= "\n\n";
+            }
+        }
+
+        // PR deadline hari ini
+        if ($homeworksToday->isNotEmpty()) {
+            $pesan .= "🚨 *DEADLINE HARI INI!*\n";
+            foreach ($homeworksToday as $hw) {
+                $pesan .= "• [{$hw->subject}] {$hw->title}\n";
+                if ($hw->due_time) {
+                    $jam = \Carbon\Carbon::parse($hw->due_time)->format('H:i');
+                    $pesan .= "  ⏰ Deadline: {$jam} WIB\n";
+                }
+                if ($hw->description) {
+                    $desc = \Illuminate\Support\Str::limit($hw->description, 80);
+                    $pesan .= "  📝 {$desc}\n";
+                }
+                $pesan .= "\n";
+            }
+        }
+
+        // PR deadline besok
+        if ($homeworksTomorrow->isNotEmpty()) {
+            $pesan .= "⚠️ *DEADLINE BESOK*\n";
+            foreach ($homeworksTomorrow as $hw) {
+                $pesan .= "• [{$hw->subject}] {$hw->title}\n";
+                if ($hw->due_time) {
+                    $jam = \Carbon\Carbon::parse($hw->due_time)->format('H:i');
+                    $pesan .= "  ⏰ {$jam} WIB\n";
+                }
+                $pesan .= "\n";
+            }
+        }
+
+        // PR upcoming
+        if ($homeworksUpcoming->isNotEmpty()) {
+            $pesan .= "📋 *TUGAS MENDATANG (3 hari ke depan)*\n";
+            foreach ($homeworksUpcoming as $hw) {
+                $tgl = $hw->due_date->isoFormat('D MMM');
+                $pesan .= "• [{$hw->subject}] {$hw->title} - {$tgl}\n";
+            }
+            $pesan .= "\n";
+        }
+
+        // Kalau tidak ada PR sama sekali
+        if ($homeworksToday->isEmpty() && $homeworksTomorrow->isEmpty() && $homeworksUpcoming->isEmpty()) {
+            $pesan .= "✅ *TUGAS / PR*\n";
+            $pesan .= "Tidak ada tugas mendatang. Santai dulu! 😊\n\n";
+        }
+
+        $pesan .= str_repeat("─", 30) . "\n";
+        $pesan .= "_Pesan ini dikirim melalui InfoClass_ 🎓";
+
+        return response()->json(['pesan' => $pesan]);
+    }
+
+    private function getHariIndonesia(): string
+    {
+        $map = [
+            0 => 'Minggu',
+            1 => 'Senin',
+            2 => 'Selasa',
+            3 => 'Rabu',
+            4 => 'Kamis',
+            5 => 'Jumat',
+            6 => 'Sabtu'
+        ];
+        return $map[now()->dayOfWeek];
+    }
 }
