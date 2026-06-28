@@ -88,5 +88,5 @@ Route::middleware(['auth', 'role:admin'])
         // Pengaturan Website
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
         Route::post('/settings', [AdminController::class, 'settingsUpdate'])->name('settings.update');
-        Route::get('/wa-message', [AdminController::class, 'generateWAMessage'])->name('admin.wa.message');
+        Route::get('/wa-message', [AdminController::class, 'generateWAMessage'])->name('wa.message');
     });
