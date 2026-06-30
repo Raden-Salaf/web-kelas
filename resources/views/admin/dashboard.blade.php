@@ -30,7 +30,6 @@
             </button>
         </div>
 
-        {{-- Preview Pesan --}}
         <div x-show="pesan" x-transition class="space-y-4">
             <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-700">
                 <p class="text-xs text-slate-500 mb-2 font-medium">Preview Pesan:</p>
@@ -55,6 +54,32 @@
                     </a>
                 @endif
             </div>
+        </div>
+    </div>
+
+    {{-- WIDGET KIRIM EMAIL --}}
+    <div class="glass rounded-2xl p-6 mb-8" x-data="emailWidget()">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    📧 Kirim Email Pengingat ke Semua Siswa
+                </h3>
+                <p class="text-slate-400 text-xs mt-1">
+                    Email otomatis terkirim ke semua siswa terdaftar
+                </p>
+            </div>
+            <button @click="kirim()" :disabled="loading"
+                class="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm flex items-center gap-2 cursor-pointer">
+                <span x-show="!loading">📨 Kirim Email Sekarang</span>
+                <span x-show="loading">Mengirim...</span>
+            </button>
+        </div>
+
+        <div x-show="result" x-transition
+            :class="success ? 'bg-green-500/20 border-green-500/30 text-green-400' :
+                'bg-red-500/20 border-red-500/30 text-red-400'"
+            class="border px-4 py-3 rounded-xl text-sm">
+            <span x-text="result"></span>
         </div>
     </div>
 
@@ -155,9 +180,7 @@
                 }
             }
         }
-    </script>
 
-    <script>
         function emailWidget() {
             return {
                 loading: false,
