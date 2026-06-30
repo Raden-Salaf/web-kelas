@@ -89,4 +89,5 @@ Route::middleware(['auth', 'role:admin'])
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
         Route::post('/settings', [AdminController::class, 'settingsUpdate'])->name('settings.update');
         Route::get('/wa-message', [AdminController::class, 'generateWAMessage'])->name('wa.message');
+        Route::get('/send-email', [AdminController::class, 'sendDailyEmail'])->name('send.email');
     });

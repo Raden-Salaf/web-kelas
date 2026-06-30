@@ -9,6 +9,7 @@
     @php
         $waMessageUrl = route('admin.wa.message');
         $waGrupUrl = \App\Models\SiteSetting::getValue('whatsapp_group', '#');
+        $sendEmailUrl = route('admin.send.email');
     @endphp
 
     {{-- WIDGET KIRIM WA --}}
@@ -151,6 +152,34 @@
 
                 waGrupLink() {
                     return this.grupUrl;
+                }
+            }
+        }
+    </script>
+
+    <script>
+        function emailWidget() {
+            return {
+                loading: false,
+                result: '',
+                success: false,
+                url: '{{ $sendEmailUrl }}',
+
+                async kirim() {
+                    if (!confirm('Kirim email pengingat ke semua siswa sekarang?')) return;
+
+                    this.loading = true;
+                    this.result = '';
+                    try {
+                        const res = await fetch(this.url);
+                        const data = await res.json();
+                        this.result = data.message;
+                        this.success = data.gagal === 0;
+                    } catch (e) {
+                        this.result = 'Gagal mengirim email. Coba lagi.';
+                        this.success = false;
+                    }
+                    this.loading = false;
                 }
             }
         }

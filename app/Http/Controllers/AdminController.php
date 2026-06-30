@@ -239,4 +239,54 @@ class AdminController extends Controller
         ];
         return $map[now()->dayOfWeek];
     }
+
+    public function sendDailyEmail()
+    {
+        $hariIni = $this->getHariIndonesia();
+        $tanggal = now()->isoFormat('dddd, D MMMM Y');
+        $className = \App\Models\SiteSetting::getValue('class_name', 'Kelas TIF');
+
+        $schedules = \App\Models\Schedule::where('day', $hariIni)->orderBy('start_time')->get();
+
+        $homeworksToday = \App\Models\Homework::where('is_done', false)
+            ->whereDate('due_date', today())->orderBy('due_time')->get();
+
+        $homeworksTomorrow = \App\Models\Homework::where('is_done', false)
+            ->whereDate('due_date', today()->addDay())->orderBy('due_time')->get();
+
+        $homeworksUpcoming = \App\Models\Homework::where('is_done', false)
+            ->whereDate('due_date', '>', today()->addDay())
+            ->whereDate('due_date', '<=', today()->addDays(3))
+            ->orderBy('due_date')->get();
+
+        $siswas = \App\Models\User::where('role', 'siswa')->get();
+
+        $sukses = 0;
+        $gagal = 0;
+
+        foreach ($siswas as $siswa) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($siswa->email)->send(
+                    new \App\Mail\DailyReminderMail([
+                        'studentName'        => $siswa->name,
+                        'className'          => $className,
+                        'tanggal'            => $tanggal,
+                        'schedules'          => $schedules,
+                        'homeworksToday'     => $homeworksToday,
+                        'homeworksTomorrow'  => $homeworksTomorrow,
+                        'homeworksUpcoming'  => $homeworksUpcoming,
+                    ])
+                );
+                $sukses++;
+            } catch (\Exception $e) {
+                $gagal++;
+            }
+        }
+
+        return response()->json([
+            'message' => "Email terkirim ke {$sukses} siswa" . ($gagal > 0 ? ", {$gagal} gagal" : ""),
+            'sukses' => $sukses,
+            'gagal' => $gagal,
+        ]);
+    }
 }
